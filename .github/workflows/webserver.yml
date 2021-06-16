@@ -32,3 +32,15 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+      - name: Update docker container
+        uses: fifsky/ssh-action@master
+          with:
+            command: |
+              sudo docker image prune -f
+              cd /home/ubuntu/poster
+              sudo docker-compose down
+              sudo $(aws ecr get-login --no-include-email --registry-ids 574137177783 --region eu-west-1)
+              sudo docker-compose up --build -d
+            host: ${{ secrets.HOST }}
+            user: ubuntu
+            key: ${{ secrets.PRIVATE_KEY}}
