@@ -1,5 +1,6 @@
 name: Build and Deploy Python app
-on: [push]
+on: 
+  workflow_dispatch:
 
 jobs:
   deploy:
